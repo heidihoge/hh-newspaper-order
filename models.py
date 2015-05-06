@@ -197,3 +197,16 @@ class Reclamos:
 
     def set_supervisor(self, supervisor):
         self.__supervisor = supervisor
+
+class ProductoRevista(Producto):
+    def __init__(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None,  valor_agregado):
+        Producto._init_(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None)
+        self.valor_agregado = valor_agregado
+  
+    def get_valor_agregado(self):
+        return self.__valor_agregado
+
+    def set_valor_agregado(self, valor_agregado):
+        self.__valor_agregado = valor_agregado
+
+
