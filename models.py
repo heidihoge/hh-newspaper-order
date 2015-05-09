@@ -199,7 +199,7 @@ class Reclamos:
         self.__supervisor = supervisor
 
 class ProductoRevista(Producto):
-    def __init__(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None,  valor_agregado):
+    def __init__(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None,  valor_agregado=None):
         Producto._init_(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None)
         self.valor_agregado = valor_agregado
   
