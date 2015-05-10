@@ -7,6 +7,7 @@
 # x producto.
 # x reclamos.
 
+
 class Distribuidor:
     def __init__(self, cod=None, ruc=None, nombre=None, direccion=None, supervisor=None):
         self.__cod = cod
@@ -97,11 +98,12 @@ class Supervisor:
 
 
 class Producto:
-    def __init__(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None):
+    def __init__(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None, precio_venta=None):
         self.__cod = cod
         self.__fecha_publicacion = fecha_publicacion
         self.__nombre = nombre
         self.__descripcion = descripcion
+        self.__precio_venta = precio_venta
 
     def get_cod(self):
         return self.__cod
@@ -126,6 +128,12 @@ class Producto:
 
     def set_descripcion(self, descripcion):
         self.__descripcion = descripcion
+
+    def get_precio_venta(self):
+        return self.__precio_venta
+
+    def set_precio_venta(self, precio_venta):
+        self.__precio_venta = precio_venta
 
 
 class Devoluciones:
@@ -166,7 +174,7 @@ class Reclamos:
         self.__asunto = asunto
         self.__respuesta = respuesta
         self.__distribuidor = distribuidor
-        self.supervisor = supervisor
+        self.__supervisor = supervisor
 
     def get_fecha_reclamo(self):
         return self.__fecha_reclamo
@@ -198,15 +206,14 @@ class Reclamos:
     def set_supervisor(self, supervisor):
         self.__supervisor = supervisor
 
+
 class ProductoRevista(Producto):
     def __init__(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None,  valor_agregado=None):
-        Producto._init_(self, cod=None, fecha_publicacion=None, nombre=None, descripcion=None)
-        self.valor_agregado = valor_agregado
+        Producto.__init__(self, cod=cod, fecha_publicacion=fecha_publicacion, nombre=nombre, descripcion=descripcion)
+        self.__valor_agregado = valor_agregado
   
     def get_valor_agregado(self):
         return self.__valor_agregado
 
     def set_valor_agregado(self, valor_agregado):
         self.__valor_agregado = valor_agregado
-
-
