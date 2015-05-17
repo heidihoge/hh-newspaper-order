@@ -430,3 +430,102 @@ class ClienteSuscriptor(Cliente, Supervisado):
                                 asunto=asunto, contenido=contenido, fecha_reclamo=date.today())
         db.reclamos.append(nuevo_reclamo)
         return nuevo_reclamo
+
+
+class Periodico(Producto, Publicacion):
+    def __init__(self, fecha_publicacion=None,codigo=None, precio=None,
+                 titulo_portada=None, numero_secciones=None, pagina_especial=False):
+        Producto.__init__(self, codigo, precio)
+        Publicacion.__init__(self, fecha_publicacion)
+        self.__titulo_portada = titulo_portada
+        self.__numero_secciones = numero_secciones
+        self.__pagina_especial = pagina_especial
+
+    def get_titulo_portada(self):
+        return self.__titulo_portada
+
+    def set_titulo_portada(self,titulo_portada):
+        self.__titulo_portada = titulo_portada
+
+    def get_numero_secciones(self):
+        return self.__numero_secciones
+
+    def set_numero_secciones(self, numero_secciones):
+        self.__numero_secciones = numero_secciones
+
+    def get_pagina_especial(self):
+        return self.__pagina_especial
+
+    def set_pagina_especial(self, pagina_especial):
+        self.__pagina_especial = pagina_especial
+
+
+class Publico:
+    def __init__(self, publico=None):
+        self.__publico = publico
+
+    def get_publico(self):
+        return self.__publico
+
+    def set_publico(self, publico):
+        self.__publico = publico
+
+
+class Revista(Producto, Publicacion, Publico):
+    def __init__(self, codigo=None, precio=None, fecha_publicacion=None, publico=None,
+                 edicion=None, tema_portada=None,numero_publicacion=None,valor_agregado=False):
+        Producto.__init__(self, codigo, precio)
+        Publicacion.__init__(self, fecha_publicacion)
+        Publico.__init__(self, publico)
+        self.__edicion = edicion
+        self.__tema_portada = tema_portada
+        self.__numero_publicacion = numero_publicacion
+        self.__valor_agregado = valor_agregado
+
+    def get_edicion(self):
+        return self.__edicion
+
+    def set_edicion(self, edicion):
+        self.__edicion = edicion
+
+    def get_tema_portada(self):
+        return self.__tema_portada
+
+    def set_tema_portada(self, tema_portada):
+        self.__tema_portada = tema_portada
+
+    def get_numero_publicacion(self):
+        return self.__numero_publicacion
+
+    def set_numero_publicacion(self, numero_publicacion):
+        self.__numero_publicacion = numero_publicacion
+
+    def get_valor_agregado(self):
+        return self.__valor_agregado
+
+    def set_valor_agregado(self, valor_agregado):
+        self.__valor_agregado = valor_agregado
+
+
+class Coleccion(Producto, Publicacion, Publico):
+    def __init__(self, codigo=None, precio=None, fecha_publicacion=None, publico=None,
+                 nombre_coleccion=None, descripcion=None):
+        Producto.__init__(self, codigo, precio)
+        Publicacion.__init__(self, fecha_publicacion)
+        Publico.__init__(self, publico)
+        self.__nombre_coleccion = nombre_coleccion
+        self.__descripcion = descripcion
+
+    def get_nombre_coleccion(self):
+        return self.__nombre_coleccion
+
+    def set_nombre_coleccion(self, nombre_coleccion):
+        self.__nombre_coleccion = nombre_coleccion
+
+    def get_descripcion(self):
+        return self.__descripcion
+
+    def set_descripcion(self, descripcion):
+        self.__descripcion = descripcion
+
+
