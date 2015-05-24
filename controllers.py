@@ -13,7 +13,7 @@ class Controller:
             try:
                 opt = int(input())
             except:
-                print ("Por favor introduzca el numero del item.")
+                print ("Por favor introduzca el numero de item.")
             if len(acciones) >= opt > 0:
                 acciones[opt - 1]()
 
