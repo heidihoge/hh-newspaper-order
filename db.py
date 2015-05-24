@@ -11,6 +11,7 @@ reclamos = None
 cantidad_suscripciones = None
 suscripciones = None
 
+
 def guardar(obj, key):
     """
     Guarda un objeto en la base de datos

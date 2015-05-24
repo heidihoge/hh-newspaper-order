@@ -34,12 +34,15 @@ class AdminController(Controller):
         Controller.__init__(self, menu_items=items)
 
     def menu_principal(self):
-        acciones = [self.menu_productos]
+        acciones = [self.menu_productos, self.menu_supervisores]
         self.menu(titulo='Menu Principal', acciones=acciones)
 
     def menu_productos(self):
         acciones = [ProductoService.listar, ProductoService.crear, ProductoService.eliminar]
         self.menu(titulo='Producto', acciones=acciones, numero_menu=1)
 
+    def menu_supervisores(self):
+        acciones = [SupervisorService.listar, SupervisorService.crear, SupervisorService.eliminar]
+        self.menu(titulo='Supervisores', acciones=acciones, numero_menu=1)
 
 AdminController().menu_principal()

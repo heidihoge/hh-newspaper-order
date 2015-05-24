@@ -106,7 +106,6 @@ class Cliente(Persona):
     def realizar_reclamo(self, asunto, contenido):
         pass
 
-
 class Aceptable:
     def __init__(self, aceptado=False):
         self.__aceptado = aceptado
@@ -187,6 +186,16 @@ class Supervisor(Persona):
         reclamo.set_fecha_atendido(date.today())
         return reclamo
 
+    def __str__(self):
+        string = Supervisor.__str__(self)
+        string += ' Codigo: ' + self.get_codigo().__str__()
+        string += ' Nombre: ' + self.get_nombre()
+        string += ' Direccion: ' + self.get_direccion()
+        string += ' Telefono: ' + str(self.get_telefono())
+        string += ' Email: ' + self.get_email()
+        string += ' Razon social: ' + str(self.get_razon_social())
+        string += ' RUC: ' + self.get_ruc()
+        return string
 
 class Supervisado:
     def __init__(self, supervisor=None):
@@ -334,6 +343,19 @@ class ClienteDistribuidor(Cliente, Supervisado):
         db.reclamos.append(nuevo_reclamo)
         return nuevo_reclamo
 
+    def __str__(self):
+        string = Cliente.__str__(self)
+        string += ' Codigo: ' + self.get_codigo()
+        string += ' Nombre: ' + self.get_nombre()
+        string += ' Direccion: ' + self.get_direccion()
+        string += ' Telefono: ' + str(self.get_telefono())
+        string += ' Email: ' + self.get_email()
+        string += ' Razon social: ' + str(self.get_razon_social())
+        string += ' RUC: ' + self.get_ruc()
+        string += ' Supervisor: ' + self.get_supervisor()
+        string += ' Antigüedad: ' + str(self.get_antiguedad())
+        string += ' Descuento: ' + self.get_descuento()
+        return string
 
 class Suscripcion(Aceptable):
     MODALIDAD_MENSUAL = 0
@@ -438,6 +460,17 @@ class ClienteSuscriptor(Cliente, Supervisado):
         db.reclamos.append(nuevo_reclamo)
         return nuevo_reclamo
 
+    def __str__(self):
+        string = Cliente.__str__(self)
+        string += ' Codigo: ' + self.get_codigo()
+        string += ' Nombre: ' + self.get_nombre()
+        string += ' Direccion: ' + self.get_direccion()
+        string += ' Telefono: ' + str(self.get_telefono())
+        string += ' Email: ' + self.get_email()
+        string += ' Razon social: ' + str(self.get_razon_social())
+        string += ' RUC: ' + self.get_ruc()
+        string += ' Supervisor: ' + self.get_supervisor()
+        return string
 
 class Periodico(Producto, Publicacion):
     def __init__(self, fecha_publicacion=None, precio=None,
@@ -487,7 +520,7 @@ class Publico:
 
 class Revista(Producto, Publicacion, Publico):
     def __init__(self, precio=None, fecha_publicacion=None, publico=None,
-                 edicion=None, tema_portada=None,numero_publicacion=None,valor_agregado=False):
+                 edicion=None, tema_portada=None,numero_publicacion=None, valor_agregado=False):
         Producto.__init__(self, precio)
         Publicacion.__init__(self, fecha_publicacion)
         Publico.__init__(self, publico)
@@ -520,6 +553,17 @@ class Revista(Producto, Publicacion, Publico):
     def set_valor_agregado(self, valor_agregado):
         self.__valor_agregado = valor_agregado
 
+    def __str__(self):
+        string = Producto.__str__(self)
+        string += ' Fecha Publicacion: ' + self.get_fecha_publicacion().__str__()
+        string += ' Precio: ' + str(self.get_precio())
+        string += ' Publico: ' + str(self.get_publico())
+        string += ' Edicion: ' + str(self.get_edicion())
+        string += ' Tema de Portada: ' + self.get_tema_portada()
+        string += ' Numero de Publicacion: ' + str(self.get_numero_publicacion())
+        string += ' Valor Agregado: ' + str(self.get_valor_agregado())
+        return string
+
 
 class Coleccion(Producto, Publicacion, Publico):
     def __init__(self, precio=None, fecha_publicacion=None, publico=None,
@@ -542,6 +586,14 @@ class Coleccion(Producto, Publicacion, Publico):
     def set_descripcion(self, descripcion):
         self.__descripcion = descripcion
 
+    def __str__(self):
+        string = Producto.__str__(self)
+        string += ' Fecha Publicacion: ' + self.get_fecha_publicacion().__str__()
+        string += ' Precio: ' + str(self.get_precio())
+        string += ' Publico: ' + self.get_publico()
+        string += ' Nombre de Coleccion: ' + str(self.get_nombre_coleccion())
+        string += ' Descripcion: ' + self.get_descripcion()
+        return string
 
 
 db.cargar_todo()
