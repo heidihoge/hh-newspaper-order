@@ -6,8 +6,10 @@ import db
 
 
 class Producto:
-    def __init__(self, codigo=None, precio=None):
-        self.__codigo = codigo
+    def __init__(self, precio=None):
+        db.cargar_todo()
+        self.__codigo = db.cantidad_productos
+        db.guardar(db.cantidad_productos+1, 'cantidad_productos')
         self.__precio = precio
 
     def get_codigo(self):
@@ -21,6 +23,11 @@ class Producto:
 
     def set_precio(self, precio):
         self.__precio = precio
+
+    def __str__(self):
+        string = 'Codigo: ' + str(self.get_codigo())
+        string += ' Precio: ' + str(self.get_precio())
+        return string
 
 
 class Publicacion:
@@ -433,9 +440,9 @@ class ClienteSuscriptor(Cliente, Supervisado):
 
 
 class Periodico(Producto, Publicacion):
-    def __init__(self, fecha_publicacion=None,codigo=None, precio=None,
+    def __init__(self, fecha_publicacion=None, precio=None,
                  titulo_portada=None, numero_secciones=None, pagina_especial=False):
-        Producto.__init__(self, codigo, precio)
+        Producto.__init__(self, precio)
         Publicacion.__init__(self, fecha_publicacion)
         self.__titulo_portada = titulo_portada
         self.__numero_secciones = numero_secciones
@@ -459,6 +466,13 @@ class Periodico(Producto, Publicacion):
     def set_pagina_especial(self, pagina_especial):
         self.__pagina_especial = pagina_especial
 
+    def __str__(self):
+        string = Producto.__str__(self)
+        string += ' Fecha Publicacion: ' + self.get_fecha_publicacion().__str__()
+        string += ' Titulo: ' + self.get_titulo_portada()
+        string += ' Secciones: ' + str(self.get_numero_secciones())
+        string += ' Especial: ' + str(self.get_pagina_especial())
+        return string
 
 class Publico:
     def __init__(self, publico=None):
@@ -472,9 +486,9 @@ class Publico:
 
 
 class Revista(Producto, Publicacion, Publico):
-    def __init__(self, codigo=None, precio=None, fecha_publicacion=None, publico=None,
+    def __init__(self, precio=None, fecha_publicacion=None, publico=None,
                  edicion=None, tema_portada=None,numero_publicacion=None,valor_agregado=False):
-        Producto.__init__(self, codigo, precio)
+        Producto.__init__(self, precio)
         Publicacion.__init__(self, fecha_publicacion)
         Publico.__init__(self, publico)
         self.__edicion = edicion
@@ -508,9 +522,9 @@ class Revista(Producto, Publicacion, Publico):
 
 
 class Coleccion(Producto, Publicacion, Publico):
-    def __init__(self, codigo=None, precio=None, fecha_publicacion=None, publico=None,
+    def __init__(self, precio=None, fecha_publicacion=None, publico=None,
                  nombre_coleccion=None, descripcion=None):
-        Producto.__init__(self, codigo, precio)
+        Producto.__init__(self, precio)
         Publicacion.__init__(self, fecha_publicacion)
         Publico.__init__(self, publico)
         self.__nombre_coleccion = nombre_coleccion
