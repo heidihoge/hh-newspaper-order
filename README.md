@@ -3,5 +3,5 @@ app to order newspapers
 
 #### instalar
 ```bash
-pip install python-dateutils
+pip install -r requirements.txt
 ```
