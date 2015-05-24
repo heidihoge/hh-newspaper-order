@@ -89,7 +89,7 @@ class Persona:
 
 
 class Cliente(Persona):
-    __metaclass__ = ABCMeta
+    # __metaclass__ = ABCMeta
 
     def __init__(self, codigo=None, nombre=None, direccion=None,
                  telefono=None, email=None, razon_social=None, ruc=None):
@@ -529,3 +529,5 @@ class Coleccion(Producto, Publicacion, Publico):
         self.__descripcion = descripcion
 
 
+
+db.cargar_todo()
