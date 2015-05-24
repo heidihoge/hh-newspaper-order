@@ -1,65 +1,45 @@
-def g():
-    print("Item")
+from servicios import *
 
 
-class AdminController:
+class Controller:
+    def __init__(self, menu_items):
+        self.menu_items = menu_items
+
+    def menu(self, titulo, acciones, numero_menu=0, max_menu=100):
+        opt = None
+        while opt != 0:
+            print titulo
+            self.mostrar_menu(numero_menu, max_menu)
+            try:
+                opt = int(input())
+            except:
+                print ("Por favor introduzca el numero del item.")
+            if len(acciones) >= opt > 0:
+                acciones[opt - 1]()
+
+    def mostrar_menu(self, num=0, max=100):
+        print "0 - Salir"
+        c = 0
+        for item in self.menu_items[num]:
+            c += 1
+            if c >= max:
+                break
+            print c, '-', item
+
+
+class AdminController(Controller):
     def __init__(self):
-        self.menu_items = ("Productos", "Supervisores", "Clientes", "Pedidos", "Suscripciones", "Reclamos", "Atras")
-        self.submenu_items = ("Listar", "Crear", "Eliminar", "Modificar", "Atras", "")
-        self.disponible = ((1, 1, 1, 1, 1), (1, 1, 1, 1, 1), (1, 0, 0, 0, 1),
-                           (1, 0, 0, 0, 1), (1, 0, 0, 0, 1), (1, 0, 0, 0, 1))
+        items = [["Productos", "Supervisores", "Clientes", "Pedidos", "Suscripciones", "Reclamos"],
+                 ["Listar", "Crear", "Eliminar", "Modificar"]]
+        Controller.__init__(self, menu_items=items)
 
-    def verificar_menu(self, menu_seleccionado):
-        # verifica si es numero
-        num = 0
-        try:
-            num = int(menu_seleccionado)
-        except:
-            return False
+    def menu_principal(self):
+        acciones = [self.menu_productos]
+        self.menu(titulo='Menu Principal', acciones=acciones)
 
-        # verifica si esta en rango
-        return 0 <= num < len(self.menu_items)
-
-    def verificar_submenu(self, menu_seleccionado, submenu_seleccionado):
-        # verifica si es numero
-        num = 0
-        try:
-            num = int(submenu_seleccionado)
-        except:
-            return False
-
-        # verifica si esta en rango
-        if 0 <= num < len(self.menu_items):
-            if self.disponible[menu_seleccionado][num] == 1:
-                return True
-        return False
-
-    def menu(self):
-        menu_item = None
-        submenu_item = None
-        # menu
-        while menu_item is None:
-            for i in range(len(self.menu_items)):
-                print(u"{}-{}".format(i, self.menu_items[i]))
-            menu_item = input()
-            if not self.verificar_menu(menu_item):
-                menu_item = None
-                print("Opcion invalida")
-
-        menu_item = int(menu_item)
-
-        print("Elegiste {}".format(self.menu_items[menu_item]))
-        #submenu
-        while submenu_item is None:
-            for i in range(len(self.submenu_items)):
-                if self.disponible[menu_item][i] == 1:
-                    print(u"{}-{}".format(i, self.submenu_items[i]))
-            submenu_item = input()
-            if not self.verificar_submenu(menu_item, submenu_item):
-                submenu_item = None
-                print("Opcion invalida")
-
-        print("Elegiste {}".format(self.submenu_items[submenu_item]))
+    def menu_productos(self):
+        acciones = [ProductoService.listar, ProductoService.crear, ProductoService.eliminar]
+        self.menu(titulo='Producto', acciones=acciones, numero_menu=1)
 
 
-AdminController().menu()
+AdminController().menu_principal()
