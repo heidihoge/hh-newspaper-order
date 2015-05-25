@@ -81,15 +81,18 @@ class SupervisorService:
     @staticmethod
     def listar():
         db.cargar_todo()
-        pass
+        for supervisor in db.supervisores:
+            print supervisor.__class__.__name__, supervisor
+        print ''
+
 
     @staticmethod
     def eliminar():
         codigo = input("Ingrese el codigo de supervisor a eliminar: ")
         db.cargar_todo()
         eliminado = False
-        lista_nueva = filter(lambda x: x.get_codigo() != codigo, db.supervisor)
-        if lista_nueva != db.supervisor:
+        lista_nueva = filter(lambda x: x.get_codigo() != codigo, db.supervisores)
+        if lista_nueva != db.supervisores:
             print('Se ha eliminado el Supervisor.')
         else:
             print('El supervisor no existe.')
@@ -98,15 +101,14 @@ class SupervisorService:
 
     @staticmethod
     def crear():
-        codigo = input("Codigo: ")
-        nombre = input("Nombre: ")
-        direccion = input("Direccion: ")
-        telefono = input("Telefono: ")
-        email = input("Email: ")
-        razon_social = input("Raon Social: ")
-        ruc = input("Ruc: ")
+            nombre = input("Nombre: ")
+            direccion = input("Direccion: ")
+            telefono = input("Telefono: ")
+            email = input("Email: ")
+            razon_social = input("Razon Social: ")
+            ruc = input("Ruc: ")
 
-        supervisor = Supervisor(codigo=codigo, nombre=nombre, direccion=direccion, telefono=telefono, email=email,
-                                razon_social=razon_social, ruc=ruc)
-
-        db.cargar_todo()
+            supervisor = Supervisor(codigo=codigo, nombre=nombre, direccion=direccion, telefono=telefono, email=email,
+                                    razon_social=razon_social, ruc=ruc)
+            db.supervisores.append(supervisor)
+            db.guardar(db.supervisores, 'supervisores')

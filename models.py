@@ -94,6 +94,15 @@ class Persona:
     def set_ruc(self, ruc):
         self.__ruc = ruc
 
+    def __str__(self):
+        string = ' Codigo: ' + self.get_codigo().__str__()
+        string += ' Nombre: ' + self.get_nombre()
+        string += ' Direccion: ' + self.get_direccion()
+        string += ' Telefono: ' + str(self.get_telefono())
+        string += ' Email: ' + self.get_email()
+        string += ' Razon social: ' + str(self.get_razon_social())
+        string += ' RUC: ' + self.get_ruc()
+        return string
 
 class Cliente(Persona):
     # __metaclass__ = ABCMeta
@@ -187,15 +196,9 @@ class Supervisor(Persona):
         return reclamo
 
     def __str__(self):
-        string = Supervisor.__str__(self)
-        string += ' Codigo: ' + self.get_codigo().__str__()
-        string += ' Nombre: ' + self.get_nombre()
-        string += ' Direccion: ' + self.get_direccion()
-        string += ' Telefono: ' + str(self.get_telefono())
-        string += ' Email: ' + self.get_email()
-        string += ' Razon social: ' + str(self.get_razon_social())
-        string += ' RUC: ' + self.get_ruc()
+        string = Persona.__str__(self)
         return string
+
 
 class Supervisado:
     def __init__(self, supervisor=None):
@@ -344,14 +347,7 @@ class ClienteDistribuidor(Cliente, Supervisado):
         return nuevo_reclamo
 
     def __str__(self):
-        string = Cliente.__str__(self)
-        string += ' Codigo: ' + self.get_codigo()
-        string += ' Nombre: ' + self.get_nombre()
-        string += ' Direccion: ' + self.get_direccion()
-        string += ' Telefono: ' + str(self.get_telefono())
-        string += ' Email: ' + self.get_email()
-        string += ' Razon social: ' + str(self.get_razon_social())
-        string += ' RUC: ' + self.get_ruc()
+        string = Persona.__str__(self)
         string += ' Supervisor: ' + self.get_supervisor()
         string += ' Antigüedad: ' + str(self.get_antiguedad())
         string += ' Descuento: ' + self.get_descuento()
@@ -461,15 +457,10 @@ class ClienteSuscriptor(Cliente, Supervisado):
         return nuevo_reclamo
 
     def __str__(self):
-        string = Cliente.__str__(self)
-        string += ' Codigo: ' + self.get_codigo()
-        string += ' Nombre: ' + self.get_nombre()
-        string += ' Direccion: ' + self.get_direccion()
-        string += ' Telefono: ' + str(self.get_telefono())
-        string += ' Email: ' + self.get_email()
-        string += ' Razon social: ' + str(self.get_razon_social())
-        string += ' RUC: ' + self.get_ruc()
+        string = Persona.__str__(self)
         string += ' Supervisor: ' + self.get_supervisor()
+        string += ' Antigüedad: ' + str(self.get_antiguedad())
+        string += ' Descuento: ' + self.get_descuento()
         return string
 
 class Periodico(Producto, Publicacion):
