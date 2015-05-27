@@ -95,13 +95,13 @@ class Persona:
         self.__ruc = ruc
 
     def __str__(self):
-        string = ' Codigo: ' + self.get_codigo().__str__()
-        string += ' Nombre: ' + self.get_nombre()
-        string += ' Direccion: ' + self.get_direccion()
+        string = ' Codigo: ' + str(self.get_codigo())
+        string += ' Nombre: ' + str(self.get_nombre())
+        string += ' Direccion: ' + str(self.get_direccion())
         string += ' Telefono: ' + str(self.get_telefono())
-        string += ' Email: ' + self.get_email()
+        string += ' Email: ' + str(self.get_email())
         string += ' Razon social: ' + str(self.get_razon_social())
-        string += ' RUC: ' + self.get_ruc()
+        string += ' RUC: ' + str(self.get_ruc())
         return string
 
 class Cliente(Persona):
@@ -348,9 +348,9 @@ class ClienteDistribuidor(Cliente, Supervisado):
 
     def __str__(self):
         string = Persona.__str__(self)
-        string += ' Supervisor: ' + self.get_supervisor()
+        string += ' Supervisor: ' + str(self.get_supervisor())
         string += ' Antigüedad: ' + str(self.get_antiguedad())
-        string += ' Descuento: ' + self.get_descuento()
+        string += ' Descuento: ' + str(self.get_descuento())
         return string
 
 class Suscripcion(Aceptable):
@@ -458,9 +458,9 @@ class ClienteSuscriptor(Cliente, Supervisado):
 
     def __str__(self):
         string = Persona.__str__(self)
-        string += ' Supervisor: ' + self.get_supervisor()
-        string += ' Antigüedad: ' + str(self.get_antiguedad())
-        string += ' Descuento: ' + self.get_descuento()
+        string += ' Supervisor: (' + str(self.get_supervisor()) + ")"
+        # string += ' Antigüedad: ' + str(self.get_antiguedad())
+        # string += ' Descuento: ' + self.get_descuento()
         return string
 
 class Periodico(Producto, Publicacion):
@@ -492,8 +492,8 @@ class Periodico(Producto, Publicacion):
 
     def __str__(self):
         string = Producto.__str__(self)
-        string += ' Fecha Publicacion: ' + self.get_fecha_publicacion().__str__()
-        string += ' Titulo: ' + self.get_titulo_portada()
+        string += ' Fecha Publicacion: ' + str(self.get_fecha_publicacion())
+        string += ' Titulo: ' + str(self.get_titulo_portada())
         string += ' Secciones: ' + str(self.get_numero_secciones())
         string += ' Especial: ' + str(self.get_pagina_especial())
         return string
@@ -546,11 +546,11 @@ class Revista(Producto, Publicacion, Publico):
 
     def __str__(self):
         string = Producto.__str__(self)
-        string += ' Fecha Publicacion: ' + self.get_fecha_publicacion().__str__()
+        string += ' Fecha Publicacion: ' + str(self.get_fecha_publicacion())
         string += ' Precio: ' + str(self.get_precio())
         string += ' Publico: ' + str(self.get_publico())
         string += ' Edicion: ' + str(self.get_edicion())
-        string += ' Tema de Portada: ' + self.get_tema_portada()
+        string += ' Tema de Portada: ' + str(self.get_tema_portada())
         string += ' Numero de Publicacion: ' + str(self.get_numero_publicacion())
         string += ' Valor Agregado: ' + str(self.get_valor_agregado())
         return string
@@ -579,11 +579,11 @@ class Coleccion(Producto, Publicacion, Publico):
 
     def __str__(self):
         string = Producto.__str__(self)
-        string += ' Fecha Publicacion: ' + self.get_fecha_publicacion().__str__()
+        string += ' Fecha Publicacion: ' + str(self.get_fecha_publicacion().__str__())
         string += ' Precio: ' + str(self.get_precio())
-        string += ' Publico: ' + self.get_publico()
+        string += ' Publico: ' + str(self.get_publico())
         string += ' Nombre de Coleccion: ' + str(self.get_nombre_coleccion())
-        string += ' Descripcion: ' + self.get_descripcion()
+        string += ' Descripcion: ' + str(self.get_descripcion())
         return string
 
 
