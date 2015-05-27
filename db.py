@@ -11,6 +11,7 @@ reclamos = None
 cantidad_suscripciones = None
 suscripciones = None
 supervisores = None
+distribuidores = None
 
 
 def guardar(obj, key):
@@ -59,3 +60,5 @@ def cargar_todo():
     suscripciones = cargar('suscripciones', [])
     global supervisores
     supervisores = cargar('supervisores', [])
+    global distribuidores
+    distribuidores = cargar('distribuidores', [])
