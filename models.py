@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Esta clase contiene los modelos usados para guardar los datos
+"""
 from abc import ABCMeta, abstractmethod
 from datetime import date
 from dateutil.relativedelta import relativedelta

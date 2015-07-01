@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+Este archivo contiene los elementos necesarios para guardar y extraer datos de la base de datos
+"""
 import shelve
 database = shelve.open('hh.data')
 productos = None

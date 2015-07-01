@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+En este archivo se encuentra todas las funciones utilizadas para la interfaz grafica en TKinter
+"""
 import Tkinter as Tk
 import tkMessageBox as Message
 import inspect
@@ -7,6 +11,11 @@ import servicios
 
 
 def obtener_campos(model):
+    """
+    dada una clase, obtiene la lista de campos
+    :param model: <class> clase del modelo
+    :return: <list> lista de campost (ej ['codigo', 'precio'])
+    """
     return [name[4:] for name in dir(model) if name.startswith('get_')]
 
 
@@ -138,6 +147,9 @@ class Listar(Tk.Frame):
                     first_row += 1
 
                 def _accion(fn=accion[1], seleccion=self.selected):
+                    """
+                    Ejecuta la accion si 'fn' es una funcion, le manda seleccion como parametro
+                    """
                     if hasattr(fn, '__call__'):
                         fn(seleccion)
 
@@ -146,7 +158,7 @@ class Listar(Tk.Frame):
 
             first_row += 1
 
-        # En caso de que haya elemenos
+        # En caso de que haya elementos
         if len(self.data) > 0:
             # Crea la tabla con el listado
             crear_tabla(self, self.fields, self.data, self.selected, first_row)
@@ -229,6 +241,10 @@ class Formulario(Tk.Frame):
             button.pack()
 
     def get_obj(self):
+        """
+        Convierte el Formulario en un objeto del tipo correspondiente
+        :return: <model> obj
+        """
         obj = self._class()
         for entry in self.entries:
             campo = entry.campo
@@ -348,7 +364,16 @@ class AdminMenu(Menu):
         Muestra una lista de botones, que llaman a _nuevo(tipo) con el tipo correspondiente
         Para crear un nuevo elemento, se debe elegir antes su tipo
         (ej para crear nuevo Producto, tipos disponibles son [Periodico, Revista, Coleccion])
+        |-----------|
+        |[Periodico]|
+        |-----------|
+        |[Revista  ]|
+        |-----------|
+        |[Coleccion]|
+        |-----------|
         :param tipos: <list> lista de <class>modelos
+        :param tabla: <str> el nombre de la tabla en la bd
+        :param _fn: <function> funcion que dibuja el frame de listar correspondiente una vez guardado
         """
         self.destroy_content()
         self._content = Menu(self.master)
@@ -357,8 +382,19 @@ class AdminMenu(Menu):
             self._content.agregar_boton(tipo.__name__, lambda tipo=tipo: self._nuevo(tipo, tabla, _fn))
 
     def _eliminar(self, elementos, tabla, _fn):
-        servicios.eliminar(elementos, tabla)
-        _fn()
+        """
+        Dada una lista de elementos seleccionados, los elimina de la base de datos
+        :param elementos: <list> lista de codigos (ej [1,2,3,4])
+        :param tabla: <str> Nombre de la tabla de la bd
+        :param _fn: <funcion> Funcion que vuelve a dibujar la lista una vez eliminado
+        :return:
+        """
+        if len(elementos) == 0:
+            Message.showinfo("No hay nada que borrar", "No ha seleccionado nada que eliminar.")
+            return
+        if Message.askokcancel("Confirmar", "Estas seguro que deseas borrar estos elementos?"):
+            servicios.eliminar(elementos, tabla)
+            _fn()
 
     def _modificar(self, selected, tabla, _fn):
         if len(selected) == 0:
@@ -396,6 +432,10 @@ class AdminMenu(Menu):
         self._content.grid(row=0, column=1)
 
     def productos(self):
+        """
+        Funcion especifica
+        Dibuja la lista de productos
+        """
         self.destroy_content()
         tipos = [models.Periodico, models.Revista, models.Coleccion]
         tabla = 'productos'
@@ -411,6 +451,10 @@ class AdminMenu(Menu):
         self._content.grid(column=1, row=0)
 
     def supervisores(self):
+        """
+        Funcion especifica
+        Dibuja la lista de supervisores
+        """
         self.destroy_content()
         tabla = 'supervisores'
         self._content = Listar(master=self.master,
@@ -425,6 +469,10 @@ class AdminMenu(Menu):
         self._content.grid(column=1, row=0)
 
     def clientes(self):
+        """
+        Funcion especifica
+        Dibuja la lista de clientes
+        """
         self.destroy_content()
         tabla = 'clientes'
         self._content = Listar(master=self.master,
@@ -439,6 +487,10 @@ class AdminMenu(Menu):
         self._content.grid(column=1, row=0)
 
     def pedidos(self):
+        """
+        Funcion especifica
+        Dibuja la lista de pedidos
+        """
         self.destroy_content()
         tabla = 'pedidos'
         self._content = Listar(master=self.master,
@@ -453,6 +505,10 @@ class AdminMenu(Menu):
         self._content.grid(column=1, row=0)
 
     def suscripciones(self):
+        """
+        Funcion especifica
+        Dibuja la lista de suscripciones
+        """
         self.destroy_content()
         tabla = 'suscripciones'
         self._content = Listar(master=self.master,
@@ -467,6 +523,10 @@ class AdminMenu(Menu):
         self._content.grid(column=1, row=0)
 
     def reclamos(self):
+        """
+        Funcion especifica
+        Dibuja la lista de reclamos
+        """
         self.destroy_content()
         tabla = 'reclamos'
         self._content = Listar(master=self.master,

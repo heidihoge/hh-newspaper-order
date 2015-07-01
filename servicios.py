@@ -1,4 +1,8 @@
-import db
+# -*- coding: utf-8 -*-
+"""
+Este archivo  contiene las funciones necesarias para eliminar y guardar elementos nuevos a la base de datos
+utilizando el formulario de ventanas.py
+"""
 from models import *
 
 def eliminar(codigos, tabla):

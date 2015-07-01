@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Este archivo crea la ventana principal de la aplicacion.
+"""
 import ventanas
 import Tkinter as Tk
-import models
-import db
 
 # Inicia la ventana principal
 ventana_principal = Tk.Tk()
