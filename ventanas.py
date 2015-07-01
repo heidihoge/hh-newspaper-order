@@ -2,6 +2,7 @@ import Tkinter as Tk
 import inspect
 import models
 import db
+import servicios
 
 
 def obtener_campos(model):
@@ -169,12 +170,12 @@ class Formulario(Tk.Frame):
 
         # Obtiene la clase del modelo a utilizar
         if inspect.isclass(obj):
-            _class = obj
+            self._class = obj
         else:
-            _class = obj.__class__
+            self._class = obj.__class__
 
         # Obtiene los campos del modelo
-        self.campos = obtener_campos(_class)
+        self.campos = obtener_campos(self._class)
 
         # Agrega el titulo
         titulo_label = Tk.Label(self)
@@ -184,13 +185,24 @@ class Formulario(Tk.Frame):
 
         # Agrega el par <label | <entry> por cada campo (ej Codigo [      ] )
         row_num = 1
+
+        # lista de campos de texto
+        self.entries = []
         for campo in self.campos:
+            # Label
             label = Tk.Label(self)
             label['text'] = str(campo).capitalize().replace('_', ' ')
             label.grid(column=0, row=row_num)
+            # Entry
+            valor = Tk.StringVar()
             entry = Tk.Entry(self)
             entry.grid(column=1, row=row_num, sticky=(Tk.N, Tk.S, Tk.E, Tk.W))
+            entry['textvariable'] = valor
+            # Guarda los valores importantes
+            entry.valor = valor
             entry.campo = campo
+            # Guarda en la lista de campos
+            self.entries.append(entry)
             row_num += 1
 
         # Agrega los botones de accion (ej [Guardar] )
@@ -199,6 +211,22 @@ class Formulario(Tk.Frame):
         for accion in acciones:
             button = Tk.Button(acciones_frame, text=accion[0], command=accion[1])
             button.pack()
+
+    def get_obj(self):
+        obj = self._class()
+        for entry in self.entries:
+            campo = entry.campo
+            valor = entry.valor.get()
+            if campo == 'codigo':
+                try:
+                    valor = int(valor)
+                except:
+                    return None
+            setter = "set_%s" % campo
+            if setter in dir(obj):
+                set_valor = getattr(obj, setter)
+                set_valor(valor)
+        return obj
 
 
 class Menu(Tk.Frame):
@@ -266,8 +294,7 @@ class AdminMenu(Menu):
     def __init__(self, master=None):
         """
         Constructor del menu de admin
-        :param master:
-        :return:
+        :param master: <Frame|TK> contenedor
         """
         Menu.__init__(self, master=master)
 
@@ -292,12 +319,15 @@ class AdminMenu(Menu):
         """
         Quita el contenido de <content>
         """
+        # Si hay _content
         if self._content is not None:
+            # olvida la grilla
             self._content.grid_forget()
+            # destruye
             self._content.destroy()
             self._content = None
 
-    def seleccionar_tipo(self, tipos):
+    def seleccionar_tipo(self, tipos, tabla, _fn):
         """
         Muestra una lista de botones, que llaman a _nuevo(tipo) con el tipo correspondiente
         Para crear un nuevo elemento, se debe elegir antes su tipo
@@ -308,26 +338,37 @@ class AdminMenu(Menu):
         self._content = Menu(self.master)
         self._content.grid(row=0, column=1)
         for row_num, tipo in enumerate(tipos):
-            self._content.agregar_boton(tipo.__name__, lambda tipo=tipo: self._nuevo(tipo))
+            self._content.agregar_boton(tipo.__name__, lambda tipo=tipo: self._nuevo(tipo, tabla, _fn))
 
-    def _nuevo(self, _class):
+    def _eliminar(self, elementos, tabla, _fn):
+        servicios.eliminar(elementos, tabla)
+        _fn()
+
+    def _nuevo(self, _class, tabla, _fn):
         """
         Muestra el formulario para crear un nuevo objeto de tipo _class
         :param _class: <class> tipo de objeto a ser creado
         """
         self.destroy_content()
         self._content = Tk.Frame(self.master)
-        Formulario(self._content, _class, titulo=_class.__name__).pack()
-        button = Tk.Button(self._content, text='Guardar')
-        self._content.grid(row=0, column=2)
+        formulario = Formulario(self._content, _class, titulo=_class.__name__)
+        formulario.pack()
+        button = Tk.Button(self._content, text='Guardar',
+                           command=lambda: (servicios.guardar(formulario.get_obj(), tabla), _fn()))
+        button.pack()
+        self._content.grid(row=0, column=1)
 
     def productos(self):
         self.destroy_content()
         tipos = [models.Periodico, models.Revista, models.Coleccion]
+        tabla = 'productos'
         self._content = Listar(master=self.master,
                                model=models.Producto,
-                               list_function=(lambda: db.cargar('productos', [])),
-                               acciones=[['Nuevo', (lambda seleccion: self.seleccionar_tipo(tipos))]],
+                               list_function=(lambda: db.cargar(tabla, [])),
+                               acciones=[
+                                   ['Nuevo', (lambda seleccion: self.seleccionar_tipo(tipos, tabla, self.productos))],
+                                   ['Eliminar', (lambda seleccion: self._eliminar(seleccion, tabla, self.productos))],
+                                ],
                                title='Productos')
         self._content.grid(column=1, row=0)
 
