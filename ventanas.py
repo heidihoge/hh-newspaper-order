@@ -1,4 +1,5 @@
 import Tkinter as Tk
+import tkMessageBox as Message
 import inspect
 import models
 import db
@@ -145,8 +146,13 @@ class Listar(Tk.Frame):
 
             first_row += 1
 
-        # Crea la tabla con el listado
-        crear_tabla(self, self.fields, self.data, self.selected, first_row)
+        # En caso de que haya elemenos
+        if len(self.data) > 0:
+            # Crea la tabla con el listado
+            crear_tabla(self, self.fields, self.data, self.selected, first_row)
+        else:
+            # Caso contrario mostrar mensaje
+            Tk.Label(self, text="No hay datos").grid(row=first_row, column=1)
 
 
 class Formulario(Tk.Frame):
@@ -171,8 +177,10 @@ class Formulario(Tk.Frame):
         # Obtiene la clase del modelo a utilizar
         if inspect.isclass(obj):
             self._class = obj
+            es_obj = False
         else:
             self._class = obj.__class__
+            es_obj = True
 
         # Obtiene los campos del modelo
         self.campos = obtener_campos(self._class)
@@ -195,8 +203,16 @@ class Formulario(Tk.Frame):
             label.grid(column=0, row=row_num)
             # Entry
             valor = Tk.StringVar()
+            # Si es un objeto, carga el valor original
+            if es_obj:
+                getter = "get_%s" % campo
+                if getter in dir(obj):
+                    get_valor = getattr(obj, getter)
+                    valor.set(get_valor())
             entry = Tk.Entry(self)
             entry.grid(column=1, row=row_num, sticky=(Tk.N, Tk.S, Tk.E, Tk.W))
+            if es_obj and campo == 'codigo':
+                entry['state'] = 'readonly'
             entry['textvariable'] = valor
             # Guarda los valores importantes
             entry.valor = valor
@@ -344,17 +360,38 @@ class AdminMenu(Menu):
         servicios.eliminar(elementos, tabla)
         _fn()
 
-    def _nuevo(self, _class, tabla, _fn):
+    def _modificar(self, selected, tabla, _fn):
+        if len(selected) == 0:
+            Message.showerror("Error", "Seleccione al menos un elemento.")
+            return
+        elif len(selected) > 1:
+            Message.showerror("Error", "Seleccione solo un elemento.")
+            return
+        elementos = filter(lambda obj: obj.get_codigo() == int(selected[0]), db.cargar(tabla, []))
+        if len(elementos) == 0:
+            Message.showerror("Error", "El elemento no existe en la base de datos.")
+            return
+
+        self._nuevo(elementos[0], tabla, _fn)
+
+    def _nuevo(self, obj, tabla, _fn):
         """
         Muestra el formulario para crear un nuevo objeto de tipo _class
         :param _class: <class> tipo de objeto a ser creado
         """
+        if not inspect.isclass(obj):
+            _class = obj.__class__
+        else:
+            _class = obj
         self.destroy_content()
         self._content = Tk.Frame(self.master)
-        formulario = Formulario(self._content, _class, titulo=_class.__name__)
+        formulario = Formulario(self._content, obj, titulo=_class.__name__)
         formulario.pack()
         button = Tk.Button(self._content, text='Guardar',
-                           command=lambda: (servicios.guardar(formulario.get_obj(), tabla), _fn()))
+                           command=lambda: ((Message.showinfo("Exito!", "Guardado Correctamente"), _fn())
+                                            if servicios.guardar(formulario.get_obj(), tabla)
+                                            else Message.showerror("Error",
+                                                                   "No se puede guardar. Verifique los campos.")))
         button.pack()
         self._content.grid(row=0, column=1)
 
@@ -368,51 +405,77 @@ class AdminMenu(Menu):
                                acciones=[
                                    ['Nuevo', (lambda seleccion: self.seleccionar_tipo(tipos, tabla, self.productos))],
                                    ['Eliminar', (lambda seleccion: self._eliminar(seleccion, tabla, self.productos))],
-                                ],
+                                   ['Modificar', (lambda seleccion: self._modificar(seleccion, tabla, self.productos))],
+                               ],
                                title='Productos')
         self._content.grid(column=1, row=0)
 
     def supervisores(self):
         self.destroy_content()
+        tabla = 'supervisores'
         self._content = Listar(master=self.master,
                                model=models.Persona,
-                               list_function=(lambda: db.cargar('supervisores', [])),
-                               acciones=[],
+                               list_function=(lambda: db.cargar(tabla, [])),
+                               acciones=[
+                                   ['Nuevo', (lambda seleccion: self._nuevo(models.Supervisor, tabla, self.supervisores))],
+                                   ['Eliminar', (lambda seleccion: self._eliminar(seleccion, tabla, self.supervisores))],
+                                   ['Modificar', (lambda seleccion: self._modificar(seleccion, tabla, self.supervisores))],
+                               ],
                                title='Supervisores')
         self._content.grid(column=1, row=0)
 
     def clientes(self):
         self.destroy_content()
+        tabla = 'clientes'
         self._content = Listar(master=self.master,
                                model=models.Persona,
-                               list_function=(lambda: db.cargar('clientes', [])),
-                               acciones=[],
+                               list_function=(lambda: db.cargar(tabla, [])),
+                               acciones=[
+                                   ['Nuevo', (lambda seleccion: self._nuevo(models.Cliente, tabla, self.clientes))],
+                                   ['Eliminar', (lambda seleccion: self._eliminar(seleccion, tabla, self.clientes))],
+                                   ['Modificar', (lambda seleccion: self._modificar(seleccion, tabla, self.clientes))],
+                               ],
                                title='Clientes')
         self._content.grid(column=1, row=0)
 
     def pedidos(self):
         self.destroy_content()
+        tabla = 'pedidos'
         self._content = Listar(master=self.master,
                                model=models.Pedido,
-                               list_function=(lambda: db.cargar('pedidos', [])),
-                               acciones=[],
+                               list_function=(lambda: db.cargar(tabla, [])),
+                               acciones=[
+                                   ['Nuevo', (lambda seleccion: self._nuevo(models.Pedido, tabla, self.pedidos))],
+                                   ['Eliminar', (lambda seleccion: self._eliminar(seleccion, tabla, self.pedidos))],
+                                   ['Modificar', (lambda seleccion: self._modificar(seleccion, tabla, self.pedidos))],
+                               ],
                                title='Pedidos')
         self._content.grid(column=1, row=0)
 
     def suscripciones(self):
         self.destroy_content()
+        tabla = 'suscripciones'
         self._content = Listar(master=self.master,
                                model=models.Suscripcion,
-                               list_function=(lambda: db.cargar('suscripciones', [])),
-                               acciones=[],
+                               list_function=(lambda: db.cargar(tabla, [])),
+                               acciones=[
+                                   ['Nuevo', (lambda seleccion: self._nuevo(models.Suscripcion, tabla, self.suscripciones))],
+                                   ['Eliminar', (lambda seleccion: self._eliminar(seleccion, tabla, self.suscripciones))],
+                                   ['Modificar', (lambda seleccion: self._modificar(seleccion, tabla, self.suscripciones))],
+                               ],
                                title='Suscripciones')
         self._content.grid(column=1, row=0)
 
     def reclamos(self):
         self.destroy_content()
+        tabla = 'reclamos'
         self._content = Listar(master=self.master,
                                model=models.Reclamo,
-                               list_function=(lambda: db.cargar('reclamos', [])),
-                               acciones=[],
+                               list_function=(lambda: db.cargar(tabla, [])),
+                               acciones=[
+                                   ['Nuevo', (lambda seleccion: self._nuevo(models.Reclamo, tabla, self.reclamos))],
+                                   ['Eliminar', (lambda seleccion: self._eliminar(seleccion, tabla, self.reclamos))],
+                                   ['Modificar', (lambda seleccion: self._modificar(seleccion, tabla, self.reclamos))],
+                               ],
                                title='Reclamos')
         self._content.grid(column=1, row=0)
