@@ -55,7 +55,7 @@ class Persona:
     def get_codigo(self):
         return self.__codigo
 
-    def set_(self, codigo):
+    def set_codigo(self, codigo):
         self.__codigo = codigo
 
     def get_nombre(self):
